@@ -1,0 +1,22 @@
+# LaTeX
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.bbl
+*.blg
+*.brf
+*.vrb
+*.pyg
+
+# Directories
+_minted*/
+.ipynb_checkpoints/
+notebooks/data/
+
+# Shelves
+*.bak
+*.dat
+*.dir

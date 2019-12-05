@@ -1,2 +1,1 @@
-# presentations
-Presentations about empymod and emg3d
+# Presentations about empymod and emg3d
