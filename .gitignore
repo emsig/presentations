@@ -10,6 +10,11 @@
 *.brf
 *.vrb
 *.pyg
+*.glg
+*.glo
+*.gls
+*.glsdefs
+*.ist
 
 # Directories
 _minted*/

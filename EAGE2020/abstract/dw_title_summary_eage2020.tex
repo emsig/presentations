@@ -1,0 +1,55 @@
+\documentclass{eage2020}
+
+\usepackage{subfig}
+
+\usepackage[UKenglish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex, hidelinks]{hyperref}
+
+\usepackage{xspace}
+\usepackage{siunitx}
+\newcommand{\mr}[1]{\mathrm{#1}}
+\newcommand{\emg}[2]{\texttt{emg#1#2}\xspace}
+\newcommand{\empymod}{\texttt{empymod}\xspace}
+
+\graphicspath{{./figures/}}
+
+\begin{document}
+
+~\vspace{.5cm}
+
+{\bf \sffamily \LARGE
+  Time-domain CSEM modelling using frequency- and\\ Laplace-domain computations
+}
+
+\vspace{.5cm}
+
+D. Werthmüller$^*$ (TU Delft) and E. C. Slob (TU Delft)
+
+\vspace{1cm}
+
+{\sffamily \LARGE Summary}
+\hrule
+
+Modelling time-domain electromagnetic data with a frequency-domain code
+requires the computation of many frequencies for the Fourier transform. This
+can make it computationally very expensive when compared with time-domain
+codes. However, it has been shown that frequency-domain codes can be
+competitive if frequency-dependent modelling grids and clever frequency
+selection are used. We improve existing schemes by focusing on (a) minimizing
+the dimension of the required grid and (b) minimizing the required frequencies
+with logarithmically-spaced Fourier transforms and interpolation. These two
+changes result in a significant speed-up over previous results. We also tried
+to further speed-up the computation by using the real-valued Laplace domain
+instead of the complex-valued frequency domain. Computation in the Laplace
+domain results in a speed-up of roughly 30\,\% over computation in the
+frequency domain. Although there is no analytical transformation from the
+Laplace to the time domain we were able to derive a digital linear filter for
+it. While this filter works fine for exact analytical responses it turned out
+that it is very susceptible to the smallest error. This makes it unfortunately
+unsuitable for iterative 3D solvers which approximate the solution to a certain
+tolerance.
+
+\end{document}
