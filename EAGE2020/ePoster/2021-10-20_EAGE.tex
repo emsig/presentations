@@ -95,6 +95,39 @@
     \item Extrapolate, interpolate, set to zero
   \end{itemize}
 
+  Either model in the domain of interest, or transform
+
+  If transform, there are three key points:
+  \begin{itemize}
+    \item Solver
+    \item Method and implementation of the transform
+    \item Gridding
+  \end{itemize}
+
+  . The faster the solver, the faster modelling will be. It is important that
+the solver is robust over a wide range of values (frequencies or times). The method should
+require as few kernel evaluations as possible while remaining robust. As the frequency and
+time ranges span many orders of magnitude, the required values are ideally equally spaced
+on a logarithmic scale. The proposed fast method uses either the digital linear filter method
+or the logarithmic fast Fourier transform together with a careful selection of evaluation points
+and interpolation. In frequency-to-time domain tests this methodology requires typically 15–
+20 frequencies to cover a wide range of offsets. The gridding should be frequency- or time-
+dependent, which is accomplished by making it a function of skin depth. Optimizing for the
+least number of required cells should be combined with optimizing for computational speed.
+Looking carefully at these points resulted in much smaller computation times with speedup
+factors of ten or more over previous methods. A computation in one domain followed by
+transformation can therefore be an alternative to computation in the other domain domain if
+the required evaluation points and the corresponding grids are carefully chosen.
+
+
+This can significantly reduce the
+computation time and makes time-domain CSEM modelling with
+a frequency-domain code competitive given a robust frequency-
+domain solver, a frequency-dependent gridding function that min-
+imizes the required cells, and a Fourier transform that works on
+a logarithmic scale.
+
+
 \end{frame}
 
 \begin{frame}
@@ -103,7 +136,14 @@
 
   \bdra \quad (1) Frequency selection \quad (2) Gridding \quad \bdla\\[.5cm]
 
-  \includegraphics[width=.8\textwidth]{fullspace}
+  First, show the important three points
+
+  Show figure 1/2/3 of the paper. Forget the below ones.
+
+  Then, show the actual timing results
+
+  \includegraphics[width=.4\textwidth]{06-marine}
+  \includegraphics[width=.2\textwidth]{07-marine-multioffset}
 
 
   {\raggedright\small
@@ -121,6 +161,24 @@
 
   Also works for 3D or any model, as the transform is unaware of the
   complexity.
+
+  27 frequencies instead of 747 frequencies (201\,pt filter)
+
+  Tell what else they can find in the paper, and where they can find the paper
+  (pure)
+
+  \begin{columns}
+    \column{.75\textwidth}
+      \includegraphics[width=\linewidth]{11-cole-cole-model}
+    \column{.25\textwidth}
+      %
+      \begin{equation}
+       ~\hspace{-.5cm} \sigma(\omega) = \sigma_\infty + \frac{\sigma_0 - \sigma_\infty}{1 +
+          (\rm{i}\omega\tau)^c}
+          \nonumber
+      \end{equation}
+      %
+  \end{columns}
 
 \end{frame}
 
