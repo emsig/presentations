@@ -1,6 +1,7 @@
 \documentclass[xcolor=svgnames, usepdftitle=false, aspectratio=169]{beamer}
 \usepackage{pgfpages}
 \setbeameroption{hide notes}
+\usepackage[theorems]{tcolorbox}
 
 \frenchspacing
 
@@ -64,6 +65,9 @@
 \newcommand{\todo}{{\color{red}\texttt{TODO:}}\xspace}
 \newcommand{\bm}[1]{{\mathbf{#1}}}
 
+% Add page number to slides
+\newcommand{\ato}{\addtocounter{framenumber}{1}}
+
 % --- TITLE-STUFF ---
 
 \newcommand{\ttitle}{Time-domain CSEM modelling}
@@ -80,53 +84,63 @@
 \metroset{block=fill}  % Fills the block-environment
 \usebackgroundtemplate{\includegraphics[width=\paperwidth]{SlideTitle}}
 
+\ato
 \maketitle % ---------------------------------------------------------------- %
 \usebackgroundtemplate{\includegraphics[width=\paperwidth]{SlideContent}}
 
+\ato
+\section{Part I: frequency to time} % --------------------------------------- %
+
 \begin{frame}
-  {Fast Fourier transform of EM data for computationally expensive kernels}
+  {Fast Fourier transform of EM data for computationally expensive kernels
+  $^\dagger$}
 
+  \begin{columns}[t]
+    \column{.33\textwidth}
+
+    \begin{block}
+      {Solver}
+      \begin{itemize}
+        \item Fast
+        \item Robust over wide range of frequencies
+      \end{itemize}
+    \end{block}
+
+    \column{.33\textwidth}
+
+    \begin{block}
+      {Gridding}
+
+      \begin{itemize}
+        \item Adaptive
+        \item $f$-dependent
+      \end{itemize}
+    \end{block}
+
+    \column{.33\textwidth}
+
+    \begin{block}
+      {Transform}
+      As few frequencies as possible
+      \begin{itemize}
+        \item Log-scale\\(DLF; FFTLog)
+        \item Interpolation
+        \item Zero-padding
+      \end{itemize}
+    \end{block}
+
+  \end{columns}
+
+  \vspace{-1cm}
+  \alert{Conclusions}
   \begin{itemize}
-    \item Check and cite paper
-    \item 15--25 frequencies
-    \item Adaptive gridding; fct of skin depth
-    \item Minimize frequencies; interpolation
-    \item FFTLog or DLF
-    \item Extrapolate, interpolate, set to zero
+    \item 15--25 frequencies are usually enough
+    \item Equally applies for $t\rightarrow f$
   \end{itemize}
 
-  Either model in the domain of interest, or transform
-
-  If transform, there are three key points:
-  \begin{itemize}
-    \item Solver
-    \item Method and implementation of the transform
-    \item Gridding
-  \end{itemize}
-
-  . The faster the solver, the faster modelling will be. It is important that
-the solver is robust over a wide range of values (frequencies or times). The method should
-require as few kernel evaluations as possible while remaining robust. As the frequency and
-time ranges span many orders of magnitude, the required values are ideally equally spaced
-on a logarithmic scale. The proposed fast method uses either the digital linear filter method
-or the logarithmic fast Fourier transform together with a careful selection of evaluation points
-and interpolation. In frequency-to-time domain tests this methodology requires typically 15–
-20 frequencies to cover a wide range of offsets. The gridding should be frequency- or time-
-dependent, which is accomplished by making it a function of skin depth. Optimizing for the
-least number of required cells should be combined with optimizing for computational speed.
-Looking carefully at these points resulted in much smaller computation times with speedup
-factors of ten or more over previous methods. A computation in one domain followed by
-transformation can therefore be an alternative to computation in the other domain domain if
-the required evaluation points and the corresponding grids are carefully chosen.
-
-
-This can significantly reduce the
-computation time and makes time-domain CSEM modelling with
-a frequency-domain code competitive given a robust frequency-
-domain solver, a frequency-dependent gridding function that min-
-imizes the required cells, and a Fourier transform that works on
-a logarithmic scale.
-
+  \vspace{.5cm}
+  \footnotesize
+  $^\dagger$ Werthmüller, Mulder, and Slob, 2021, GJI, 10.1093/gji/ggab171.
 
 \end{frame}
 
@@ -134,24 +148,13 @@ a logarithmic scale.
   {Example using FFTLog and Digital Linear Filters}
   \centering
 
-  \bdra \quad (1) Frequency selection \quad (2) Gridding \quad \bdla\\[.5cm]
+  \only<1>{\includegraphics[width=.8\textwidth]{02b-DLF-lin}\ato}
+  \only<2>{\includegraphics[width=.8\textwidth]{02a-FFTLog-lin}}
+  \only<3>{\includegraphics[width=.8\textwidth]{03-multi-offset}\ato}
 
-  First, show the important three points
-
-  Show figure 1/2/3 of the paper. Forget the below ones.
-
-  Then, show the actual timing results
-
-  \includegraphics[width=.4\textwidth]{06-marine}
-  \includegraphics[width=.2\textwidth]{07-marine-multioffset}
-
-
-  {\raggedright\small
-  Werthmüller et al., 2021, \emph{Fast Fourier transform of electromagnetic
-  data\\for computationally expensive kernels}, GJI; DOI:
-  \href{https://doi.org/10.1093/gji/ggab171}{10.1093/gji/ggab171}.\\
-  }
-
+  \textbullet\ $f<f_\mr{min}$ PCHIP \hfill
+  \textbullet\ $f_\mr{min}<f<f_\mr{max}$ Cubic spline \hfill
+  \textbullet\ $f>f_\mr{max}$ 0
 
 \end{frame}
 
@@ -161,11 +164,6 @@ a logarithmic scale.
 
   Also works for 3D or any model, as the transform is unaware of the
   complexity.
-
-  27 frequencies instead of 747 frequencies (201\,pt filter)
-
-  Tell what else they can find in the paper, and where they can find the paper
-  (pure)
 
   \begin{columns}
     \column{.75\textwidth}
@@ -180,7 +178,13 @@ a logarithmic scale.
       %
   \end{columns}
 
+  27 frequencies instead of 747 frequencies (201\,pt filter)
+
 \end{frame}
+
+\ato
+\section{Part II: Laplace to time} % ---------------------------------------- %
+
 
 
 \begin{frame}  % Motivation
@@ -191,81 +195,86 @@ a logarithmic scale.
   % Correct for: e^+iwt: + s σ E − ∇ × µ^-1 ∇ × E = − s J
   %              e^-iwt: + s σ E + ∇ × µ^-1 ∇ × E = − s J
   $$
+  \tcbhighmath[colframe=SteelBlue]{
     \mr{i}\omega \rightarrow s:
     \qquad
-    \textcolor{red}{s} \sigma \mathbf{E} \ +\
-    \nabla \times \mu^{-1} \nabla \times \mathbf{E}
-    \ =\ -\textcolor{red}{s} \mathbf{J}_\mathrm{s}
+    \textcolor{red}{s} \mu \tilde{\sigma} \mathbf{E} \ +\
+    \nabla^2 \mathbf{E} \ =\ -\textcolor{red}{s} \mu \mathbf{J}_\mathrm{s}
+  }
   $$
-
-  \bdra Faster\quad (1) Computation\quad (2) Convergence \quad \bdla\\
-  \vspace{.5cm}
 
   \includegraphics[width=\textwidth]{motivationcomparison}
 
+  \raggedright
+
+  \alert{
+    \qquad \bdra \quad  Faster\quad (1) Computation\quad (2) Convergence \quad
+    \bdla\\}
+  \vspace{.5cm}
+
 \end{frame}
 
-\begin{frame}  % Speed & Convergence
-  {Computation in layered and 3D codes}
+\begin{frame}
+  {Computation speed (layered; 3D) \& Convergence (3D)}
+  \centering
+
+  \includegraphics[width=.6\linewidth]{xf-vs-xs}%
 
   \begin{itemize}
-    \item 30\,\% speed up in computation \& convergence (?)
-    \item Computation speed-up: 1D \& 3D; convergence speed-up only 3D
-    \item Works for semi-analytical responses, but not otherwise
+    \item Overall Laplace comp. roughly 2/3 of frequency comp.
   \end{itemize}
 \end{frame}
 
 \begin{frame}  % Filter design
   {Digital linear filter for Laplace}
-\end{frame}
 
+  $$
+  F(r) = \int^\infty_0 f(l)K(l r)\mr{d}l \quad \dra \quad
+  F(r) \approx \sum^N_{n=1} \frac{f(b_n/r) h_n}{r}
+  $$
 
-\begin{frame}
-  {1D example: works!}
-
-  \begin{enumerate}
-    \item Design digital linear filters for the transform
-    \item Carry out transform for semi-analytical (layered) responses
-    \item Test stability
-  \end{enumerate}
-
-
-  \includegraphics[width=\linewidth]{s-t_time}%
+  \includegraphics[width=.47\linewidth]{filter-space}\hfill
+  \includegraphics[clip, trim=0 0 320 0, width=.47\linewidth]{s-t_time}%
 
 \end{frame}
 
-\begin{frame}
-  {1D example: it doesn't!}
 
-  Only works for \emph{very} precise results.
+\begin{frame}[t]
+  {Problem: robustness of the approach}
+  ~\vspace{-.8cm}\\
+  \includegraphics[trim=30 0 40 35, clip, width=.83\linewidth]{s-t_time-2}%
 
 \end{frame}
 
+\ato
+\section{Part III: Laplace to frequency} % ---------------------------------- %
 
 \begin{frame}
   {Laplace-to-frequency domain}
 
-  Idea and filter
+  \begin{itemize}\itemsep.5cm
+    \item Same motivation as for $s\rightarrow t$: computation speed and
+      convergence
+    \item Possible to design a linear digital filter
+    \item Same limitation as $s\rightarrow t$
+    \item Additionally: DLF seems to be offset dependent!
+  \end{itemize}
 
 \end{frame}
 
-\begin{frame}
-  {s-f}
-
-  Example
-\end{frame}
+\ato
+\section{Wrap-up} % --------------------------------------------------------- %
 
 
 \begin{frame}
-  {Conclusions}:
-
-  Note (\todo delete): 15 Minutes max \dra 15 slides max
-
-  Conclusions
-  \begin{itemize}
-    \item f\dra t: 15-25 frequencies
-    \item Laplace: xx speedup for computation and convergence
-    \item s\dra t; s\dra f: Only works for very precise results.
+  {Conclusions}
+  \begin{itemize}\itemsep1cm
+    \item $f\rightarrow t$: Solver; Method; Gridding;
+      \alert{15--25 frequencies are generally enough}
+    \item \alert{Laplace: roughly 2/3 computation time} (computation;
+      convergence)
+    \item $s\rightarrow t$; $s\rightarrow f$: \alert{DLF works; but only for
+      very precise results}
   \end{itemize}
 \end{frame}
 
