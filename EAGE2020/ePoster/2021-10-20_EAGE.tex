@@ -148,13 +148,19 @@
   {Example using FFTLog and Digital Linear Filters}
   \centering
 
-  \only<1>{\includegraphics[width=.8\textwidth]{02b-DLF-lin}\ato}
-  \only<2>{\includegraphics[width=.8\textwidth]{02a-FFTLog-lin}}
+  \only<1>{
+    ~\hspace{-1cm}
+    \includegraphics[trim=0 0 290 0, clip, width=.39\textwidth]{01-FFTLog-log}%
+    \includegraphics[width=.72\textwidth]{02a-FFTLog-lin}%
+  }
+  \only<2>{\includegraphics[width=.8\textwidth]{02b-DLF-lin}\ato}
   \only<3>{\includegraphics[width=.8\textwidth]{03-multi-offset}\ato}
 
-  \textbullet\ $f<f_\mr{min}$ PCHIP \hfill
-  \textbullet\ $f_\mr{min}<f<f_\mr{max}$ Cubic spline \hfill
-  \textbullet\ $f>f_\mr{max}$ 0
+  \only<-2>{
+  \textbullet\ $f<f_\mr{min}$: PCHIP \hfill
+  \textbullet\ $f_\mr{min}<f<f_\mr{max}$: Cubic spline \hfill
+  \textbullet\ $f>f_\mr{max}$: 0
+  }
 
 \end{frame}
 
@@ -178,7 +184,7 @@
       %
   \end{columns}
 
-  27 frequencies instead of 747 frequencies (201\,pt filter)
+  27 frequencies instead of 747 frequencies (601\,pt filter)
 
 \end{frame}
 
